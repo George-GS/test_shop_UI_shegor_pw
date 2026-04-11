@@ -27,7 +27,7 @@ class FolderProductDeskPage(BasePage):
             return self
 
     def get_visible_products_count_after_action(self):
-        # expect(self.page).not_to_have_url(f'{self.BASE_URL}{self.PAGE_URL}')
+        self.page.wait_for_load_state('networkidle')
         products_count = self.find_all(loc.visible_products_loc)
         return len(products_count)
 
