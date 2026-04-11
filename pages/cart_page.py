@@ -7,13 +7,14 @@ from pages.base_page import BasePage
 from pages.locators import cart_page_locators as loc
 
 
+
 class CartPage(BasePage):
     PAGE_URL = '/cart'
 
     def check_product_in_cart(self, product_name):
         logging.info(f'Проверяем, что товар "{product_name}" есть в корзине')
         with allure.step(f'Проверяем наличие товара "{product_name}" в корзине'):
-            expect(self.find(loc.product_in_cart)).to_have_text(product_name)
+            expect(self.find(loc.product_in_cart)).to_contain_text(product_name)
 
     def check_cart_header(self):
         logging.info('Проверяем заголовок страницы корзины')

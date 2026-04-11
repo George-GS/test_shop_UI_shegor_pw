@@ -16,8 +16,8 @@ class BasePage:
         with allure.step(f'Переходим на страницу {self.BASE_URL}{self.PAGE_URL}'):
             return self.page.goto(f'{self.BASE_URL}{self.PAGE_URL}')
 
-    def find(self, locator: tuple):
+    def find(self, locator):
         return self.page.locator(locator)
 
-    def find_all(self, locator: tuple):
+    def find_all(self, locator):
         return self.page.locator(locator).all()

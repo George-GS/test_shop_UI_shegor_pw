@@ -1,7 +1,7 @@
 import logging
 import allure
 
-from selenium.webdriver.support import expected_conditions as EC
+from playwright.sync_api import expect
 
 from pages.base_page import BasePage
 from pages.locators import product_page_locators as loc
@@ -14,20 +14,20 @@ class ProductPage(BasePage):
         logging.info(f'Проверяем название товара. Ожидается: "{expected_name}"')
         with allure.step(f'Проверяем название товара (ожидается "{expected_name}")'):
             actual_name = self.find(loc.name_product_loc)
-            assert actual_name.text == expected_name, f'Неверное имя товара. ' \
-                                             f'Ожидаемое имя: {expected_name}, текущее имя: {actual_name}'
+            expect(actual_name,
+                   f'Ожидаемое имя: {expected_name}, текущее имя: {actual_name}').to_have_text(expected_name)
 
     def check_price(self, expected_price):
         logging.info(f'Проверяем цену товара. Ожидается: "{expected_price}"')
         with allure.step(f'Проверяем цену товара (ожидается "{expected_price}")'):
             actual__price = self.find(loc.price_product_loc)
-            assert actual__price.text == expected_price, \
-                f'Неверная цена товара. Ожидаемая цена: {expected_price}, текущая цена: {actual__price}'
+            expect(actual__price,
+                   f'Ожидаемое имя: {expected_price}, текущее имя: { actual__price}').to_have_text(expected_price)
 
     def check_image(self):
         logging.info('Проверяем наличие изображения товара')
         with allure.step('Проверяем наличие изображения товара'):
-            image_product = self.wait.until(EC.visibility_of_element_located(loc.image_product_loc))
+            image_product = self.page.locator(loc.image_product_loc)
             src = image_product.get_attribute("src")
             assert src, "Атрибут src отсутствует или пуст"
 
@@ -44,14 +44,14 @@ class ProductPage(BasePage):
     def verify_added_to_cart_notification(self, expected_text):
         logging.info(f'Проверяем уведомление о добавлении в корзину: "{expected_text}"')
         with allure.step(f'Проверяем уведомление о добавлении в корзину'):
-            product_in_cart_notification = self.wait.until(EC.visibility_of_element_located(loc.product_name_in_cart_loc))
-            assert product_in_cart_notification.text == expected_text, f'Ожидалось: {expected_text}. \n' \
-                                                                       f'Текущее: {product_in_cart_notification.text}'
+            product_in_cart_notif = self.find(loc.product_name_in_cart_loc)
+            expect(product_in_cart_notif,
+                   f'Ожидалось: {expected_text}. Текущее: {product_in_cart_notif.inner_text()}').to_have_text(expected_text)
 
     def change_currency_to_euro(self):
         logging.info('Меняем валюту на евро')
         with allure.step('Переключаем валюту на евро'):
             currency = self.find(loc.currency_loc)
             currency.click()
-            eur = self.wait.until(EC.element_to_be_clickable(loc.eur_loc))
+            eur = self.find(loc.eur_loc)
             eur.click()
