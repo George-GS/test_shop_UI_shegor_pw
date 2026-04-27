@@ -10,8 +10,8 @@ def test_products_displayed_on_page(folder_product_desk_page):
 
 @allure.title('Поиск существующего товара на странице раздела товаров')
 def test_search_existing_product(folder_product_desk_page):
-    product_name = 'Customizable Desk'
     folder_product_desk_page.open_page()
+    product_name = folder_product_desk_page.get_name_first_product()
     folder_product_desk_page.search_product(product_name)
     folder_product_desk_page.verify_products_count(1)
     folder_product_desk_page.verify_product_in_results(product_name)
@@ -27,9 +27,9 @@ def test_search_nonexisten_product(folder_product_desk_page):
 
 
 @allure.title('Фильтрация товаров по материалу')
-def test_filter_by_aluminium(folder_product_desk_page):
-    product_name = 'Customizable Desk'
+def test_filter_by_aluminium(folder_product_desk_page, product_page):
     folder_product_desk_page.open_page()
     folder_product_desk_page.select_checkbox_filter_aluminium()
     folder_product_desk_page.verify_products_count(1)
-    folder_product_desk_page.verify_product_in_results(product_name)
+    folder_product_desk_page.open_product_page()
+    product_page.check_material_legs_is_aluminium()

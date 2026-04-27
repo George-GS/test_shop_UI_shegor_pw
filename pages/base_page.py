@@ -10,6 +10,7 @@ class BasePage:
 
     def __init__(self, page: Page):
         self.page = page
+        self.product_name = None
 
     def open_page(self):
         logging.info(f'Переходим на страницу {self.BASE_URL}{self.PAGE_URL}')

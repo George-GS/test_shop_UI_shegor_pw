@@ -5,7 +5,6 @@ from playwright.sync_api import expect
 
 from pages.base_page import BasePage
 from pages.locators import folder_product_desk_locators as loc
-from time import sleep
 
 
 class FolderProductDeskPage(BasePage):
@@ -64,13 +63,26 @@ class FolderProductDeskPage(BasePage):
     def select_checkbox_filter_aluminium(self):
         logging.info('Выбираем фильтр "Алюминий"')
         with allure.step('Выбираем фильтр "Алюминий"'):
-            sleep(1)
+            self.page.wait_for_load_state('networkidle')
             self.find(loc.checkbox_aluminium).first.click()
             self.page.wait_for_load_state('networkidle')
 
+
     def add_to_cart_hover(self):
-        logging.info('Наводим курсор на товар и добавляем в корзину')
-        with allure.step('Наводим курсор на товар и добавляем в корзину'):
-            product_table = self.page.locator(loc.product_table)
-            product_table.hover()
+        logging.info('Наводим курсор на первый отображаемый товар и добавляем в корзину')
+        with allure.step('Наводим курсор на первый отображаемый товар и добавляем в корзину'):
+            product_one = self.find(loc.name_prod_one_loc).first
+            self.product_name = self.find_all(loc.name_prod_one_loc)[0].get_attribute('content')
+            product_one.hover()
             self.page.get_by_role(**loc.cart_btn).first.click()
+
+    def get_name_first_product(self):
+        logging.info('Получаем имя первого товара в разделе')
+        name_first_prod = self.find_all(loc.name_prod_one_loc)[0].get_attribute('content')
+        return name_first_prod
+
+    def open_product_page(self):
+        logging.info('Кликаем на первый отображаемый товар для открытия страницы товара')
+        with allure.step('Кликаем на первый отображаемый товар для открытия страницы товара'):
+            first_prod = self.find_all(loc.name_prod_one_loc)[0]
+            first_prod.click()
